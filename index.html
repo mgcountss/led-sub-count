@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AJ's Live Sub Count</title>
+    <script src="./odometer.js"></script>
+    <link rel="stylesheet" href="./odometer.css">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            background-color: #121212;
+            color: #FFF;
+            font-family: Roboto;
+            font-size: 2vw;
+            margin: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-gap: 10px;
+            height: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .banner {
+            width: 100%;
+            height: 10vw;
+            object-fit: cover;
+            filter: blur(10px);
+        }
+
+        .avatar {
+            width: 10vw;
+            height: 10vw;
+            object-fit: cover;
+            border-radius: 50%;
+            position: absolute;
+            border: 0.5vw solid white;
+            margin-left: -30vw;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .name {
+            font-size: 3vw;
+            margin-bottom: 0;
+            margin-top: 0.5vw;
+        }
+
+        .subs {
+            font-size: 6vw;
+            margin-top: 0;
+            margin-bottom: 0.5vw;
+        }
+
+        .counter {
+            border: 0.5vw solid white;
+        }
+
+        .footer {
+            margin-top: 0vw;
+            margin-bottom: 0.5vw;
+            font-size: 2vw;
+        }
+
+        input,
+        select,
+        option {
+            font-size: 1.4vw;
+            width: 70%;
+        }
+
+        input[type=checkbox] {
+            transform: scale(2);
+        }
+
+        button {
+            font-size: 1.4vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid">
+        <div>
+            <center>
+                <h2>Currently Tracking</h2>
+            </center>
+            <hr>
+            <div class="counter">
+                <img class="banner" src="/default.png">
+                <img class="avatar" src="/default.png">
+                <center>
+                    <h1 class="name">Loading</h1>
+                    <h1 class="subs odometer">000,000,000</h1>
+                    <h2 class="footer">Subscribers</h2>
+                </center>
+            </div>
+        </div>
+        <div>
+            <div style="display: flex; gap: 5vw;">
+                <h2>Settings</h2>
+                <button id="save" onclick="save()">Save</button>
+            </div>
+            <hr>
+            <label>Channel ID: </label><input type="text" id="ID" autocomplete="off">
+            <br>
+            <label>API Source: </label>
+            <select id="API" autocomplete="off">
+                <option value="mixerno">Mixerno.space</option>
+                <option value="xyz">Livecounts.xyz</option>
+                <option value="axern">Axern.space</option>
+                <option value="raw">YouTube.com</option>
+            </select>
+            <br>
+            <label autocomplete="off" id="intervalLabel">Update Interval: 5 </label><input type="range" id="interval" min="1" max="60"
+                value="2" placeholder="2"><br>
+            <label>Auto Update: </label><input  autocomplete="off" type="checkbox" id="autoUpdate" checked style="margin-left: 0vw;">
+            <br>
+            <br>
+            <label>Color: </label><input  autocomplete="off" type="color" id="color" value="#FF0000">
+            <br>
+            <hr>
+            <h2>Change Channel</h2>
+            <hr>
+            <input type="text"  autocomplete="off" id="search" placeholder="Search"><button id="searchButton"
+                onclick="search()">Search</button>
+            <br>
+            <div id="results"></div>
+        </div>
+    </div>
+    <script>
+        let ids = ["", ""]
+        let id = ""
+        function save() {
+            if (id == "") {
+                alert('Please select a channel first!');
+            }
+            fetch('/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    api: document.getElementById('API').value,
+                    interval: document.getElementById('interval').value,
+                    autoUpdate: document.getElementById('autoUpdate').checked,
+                    color: document.getElementById('color').value
+                })
+            }).then(res => res.json())
+                .then(data => {
+                    document.getElementById('ID').value = id;
+                    if (data.status == 'ok') {
+                        alert('Saved!');
+                    } else {
+                        alert('Error!');
+                    }
+                })
+        }
+        function search() {
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    search: document.getElementById('search').value
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length == 0) {
+                        alert('No results found!');
+                    }
+                    document.getElementById('results').innerHTML = '';
+                    data.forEach(channel => {
+                        document.getElementById('results').innerHTML += `<div cid="${channel.id}" style="display: flex; gap: 5vw;"><img src="${channel.avatar}" style="width: 10vw; height: 10vw; object-fit: cover; border-radius: 50%;"><div><h2>${channel.name}</h2><h2 style="font-size: 2vw;">${channel.username}</h2><button style="font-size: 3vw;" onclick="changeChannel('${channel.id}')">Change</button></div></div><hr>`;
+                    })
+                })
+        }
+
+        function changeChannel(cid) {
+            if ((ids[1]) && (ids[1].style)) {
+                ids[1].style.border = 'none';
+            }
+            ids[0] = cid;
+            id = cid;
+            ids[1] = document.querySelectorAll('[cid="' + cid + '"]')[0]
+            ids[1].style.border = '0.5vw solid white';
+        }
+
+        document.getElementById('interval').oninput = function () {
+            document.getElementById('intervalLabel').innerHTML = 'Update Interval: ' + this.value;
+        }
+
+        let user = {}
+        function getStats() {
+            fetch('/user')
+                .then(res => res.json())
+                .then(data => {
+                    if (user.snippet == undefined) {
+                        user = data;
+                        document.querySelector('.avatar').src = data.snippet.thumbnails.high.url;
+                        document.querySelector('.name').innerHTML = data.snippet.title;
+                        document.querySelector('.banner').src = data.brandingSettings.image.bannerImageUrl;
+                        if (data.path == "counts[0]") {
+                            document.querySelector('.subs').innerHTML = data.counts[0];
+                        } else if (data.path == "counts[0].count") {
+                            document.querySelector('.subs').innerHTML = data.counts[0].count;
+                        } else if (data.path == "items[0].statistics.subscriberCount") {
+                            document.querySelector('.subs').innerHTML = data.items[0].statistics.subscriberCount;
+                        } else {
+                            document.querySelector('.subs').innerHTML = data[data.path];
+                        }
+                    }
+                    if (user.snippet.thumbnails.high.url != data.snippet.thumbnails.high.url) {
+                        document.querySelector('.avatar').src = data.snippet.thumbnails.high.url;
+                    }
+                    if (user.snippet.title != data.snippet.title) {
+                        document.querySelector('.name').innerHTML = data.snippet.title;
+                    }
+                    if (user[user.path] != data[data.path]) {
+                        if (data.path == "counts[0]") {
+                            document.querySelector('.subs').innerHTML = data.counts[0];
+                        } else if (data.path == "counts[0].count") {
+                            document.querySelector('.subs').innerHTML = data.counts[0].count;
+                        } else if (data.path == "items[0].statistics.subscriberCount") {
+                            document.querySelector('.subs').innerHTML = data.items[0].statistics.subscriberCount;
+                        } else {
+                            document.querySelector('.subs').innerHTML = data[data.path];
+                        }
+                    }
+                    if (user.brandingSettings.image.bannerImagebannerExternalUrlUrl != data.brandingSettings.image.bannerExternalUrl) {
+                        document.querySelector('.banner').src = data.brandingSettings.image.bannerExternalUrl;
+                    }
+                    user = data;
+                })
+        }
+        getStats();
+        setInterval(() => {
+            getStats();
+        }, 2000);
+
+        function settings() {
+            fetch('/settings')
+                .then(res => res.json())
+                .then(data => {
+                    id = data.id;
+                    if (data.api == "https://axern.space/api/get?platform=youtube&type=channel&id=") {
+                        data.api = "axern";
+                    } else if (data.api == "https://mixerno.space/api/youtube-channel-counter/user/") {
+                        data.api = "mixerno";
+                    } else if (data.api == "https://livecounts.xyz/api/youtube-live-subscriber-count/live/") {
+                        data.api = "xyz";
+                    } else if (data.api == "https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics&id=") {
+                        data.api = "raw";
+                    }
+                    document.getElementById('ID').value = data.id;
+                    document.getElementById('API').value = data.api;
+                    document.getElementById('interval').value = data.interval;
+                    document.getElementById('autoUpdate').checked = data.autoUpdate;
+                    document.getElementById('color').value = data.color;
+                    document.getElementById('intervalLabel').innerHTML = 'Update Interval: ' + data.interval;
+                })
+        }
+        settings();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+{
+    "estSubCount": 29590787,
+    "estSubCount_linear": 29572401,
+    "estSubCount_semilinear": 29598753,
+    "estViewCount": 2203923,
+    "apiSubCount": 29500000,
+    "apiViewCount": 2184431,
+    "apiVideoCount": 4,
+    "snippet": {
+        "title": "Glichery",
+        "description": "Phonk Music ",
+        "customUrl": "@glichery",
+        "publishedAt": "2018-07-31T10:29:56Z",
+        "thumbnails": {
+            "default": {
+                "url": "https://yt3.ggpht.com/qi83ssLFR-eaj6AqlwR4mxZLpqNNTFaonbswtbV_CimDs6zDCjx9iVxVmkYT-bwINBTLOr2m=s88-c-k-c0x00ffffff-no-nd-rj",
+                "width": 88,
+                "height": 88
+            },
+            "medium": {
+                "url": "https://yt3.ggpht.com/qi83ssLFR-eaj6AqlwR4mxZLpqNNTFaonbswtbV_CimDs6zDCjx9iVxVmkYT-bwINBTLOr2m=s240-c-k-c0x00ffffff-no-nd-rj",
+                "width": 240,
+                "height": 240
+            },
+            "high": {
+                "url": "https://yt3.ggpht.com/qi83ssLFR-eaj6AqlwR4mxZLpqNNTFaonbswtbV_CimDs6zDCjx9iVxVmkYT-bwINBTLOr2m=s800-c-k-c0x00ffffff-no-nd-rj",
+                "width": 800,
+                "height": 800
+            }
+        },
+        "localized": {
+            "title": "Glichery",
+            "description": "Phonk Music "
+        },
+        "country": "UA"
+    },
+    "brandingSettings": {
+        "channel": {
+            "title": "Glichery",
+            "description": "Phonk Music ",
+            "country": "UA"
+        },
+        "image": {
+            "bannerExternalUrl": "https://yt3.googleusercontent.com/xSA9k7OJmRLzCoMAAFz6LMwHlktlwNXGkpwkE3OZy7_yQ2C0sNhlPidqo-b6JtXuoHqtBTlogA"
+        }
+    },
+    "path": "estSubCount"
+}
