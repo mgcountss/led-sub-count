@@ -106,7 +106,7 @@ def rainbowColorUpdater():
             r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
             pixels[i] = (r, g, b)
         pixels.show()
-        time.sleep(0.1)
+        time.sleep(0.025)
         colorIndex += 1
         if colorIndex >= LED_COUNT:
             colorIndex = 0
