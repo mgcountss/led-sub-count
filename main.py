@@ -91,28 +91,32 @@ def update():
 			UPDATED = True
 
 def rainbowColorUpdater():
+	#rotate all color through the rainbow seprately than the other system so it slowly moves through the rainbow
 	global pixels
-	global UPDATED
-	global settings
-	colors = []
-	for i in range(0, 360, 10):
-		colors.append((i, 100, 100))
+	global LED_COUNT
+	global LED_BRIGHTNESS
+	global colorIndex
+	colorIndex = 0
+	colors = [
+		(255, 0, 0),
+		(255, 127, 0),
+		(255, 255, 0),
+		(0, 255, 0),
+		(0, 0, 255),
+		(75, 0, 130),
+		(143, 0, 255)
+	]
 	while True:
-		for color in colors:
-			if UPDATED == False:
-				pixels.fill(colorsys.hsv_to_rgb(color[0]/360, color[1]/100, color[2]/100))
-				pixels.show()
-				time.sleep(0.1)
-			else:
-				break
-		if UPDATED == False:
-			for color in reversed(colors):
-				if UPDATED == False:
-					pixels.fill(colorsys.hsv_to_rgb(color[0]/360, color[1]/100, color[2]/100))
-					pixels.show()
-					time.sleep(0.1)
-				else:
-					break
+		if (colorIndex == 6):
+			colorIndex = 0
+		else:
+			colorIndex = colorIndex + 1
+		for i in range(LED_COUNT):
+			pixels[i] = colors[colorIndex]
+		pixels.show()
+		
+		time.sleep(0.1)
+
 
 rainbowColorUpdater()
 
