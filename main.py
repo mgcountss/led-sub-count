@@ -16,6 +16,7 @@ CID = settings['id']
 print("Running test.py at " + datetime.datetime.now().strftime('%d/%m/%Y %H:%M'))
 
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
+activedPixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 #pixels.fill((255, 255, 255))
 pixels.show()
 
