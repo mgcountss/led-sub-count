@@ -90,7 +90,7 @@ def update():
 			setLights(subs)
 			UPDATED = True
 
-while True:
+#while True:
 	#update()
 	#settings = json.loads(open("/home/aj/lights/settings.json", "r").read())
 	#time.sleep(int(settings['interval']))
