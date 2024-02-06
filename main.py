@@ -6,6 +6,7 @@ import datetime
 import json
 import colorsys
 
+numbers = {"0":{0,1,2,3,4,5,6,7,8,9,10,12},"1":{0,1,2,3,4},"2":{0,1,2,12,4,5,6,7,8,10,11},"3":{0,2,4,5,6,7,8,9,10,11,12},"4":{2,3,4,6,7,8,9,10,11},"5":{0,11,10,9,8,12,2,3,4,5,6},"6":{0,1,2,3,4,5,6,8,9,10,11,12},"7":{4,5,6,7,8,9,10},"8":{0,1,2,3,4,5,6,7,8,9,10,11,12},"9":{0,2,3,4,5,6,7,8,9,10,11,12}}
 LED_COUNT = 117
 LED_PIN	= board.D18
 LED_BRIGHTNESS = 0.2
@@ -16,7 +17,6 @@ CID = settings['id']
 print("Running test.py at " + datetime.datetime.now().strftime('%d/%m/%Y %H:%M'))
 
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
-activedPixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
 #pixels.fill((255, 255, 255))
 pixels.show()
 
@@ -52,18 +52,39 @@ def setLights(subs):
 	global settings
 	global pixels
 	global UPDATED
-	global activedPixels
 	color = hex_to_rgb(settings['color'])
 	pixels.fill((0, 0, 0))
 	pixels.show()
 	subs = str(subs)
 	length = len(subs)
-	numbers = {"0":{0,1,2,3,4,5,6,7,8,9,10,12},"1":{0,1,2,3,4},"2":{0,1,2,12,4,5,6,7,8,10,11},"3":{0,2,4,5,6,7,8,9,10,11,12},"4":{2,3,4,6,7,8,9,10,11},"5":{0,11,10,9,8,12,2,3,4,5,6},"6":{0,1,2,3,4,5,6,8,9,10,11,12},"7":{4,5,6,7,8,9,10},"8":{0,1,2,3,4,5,6,7,8,9,10,11,12},"9":{0,2,3,4,5,6,7,8,9,10,11,12}}
 	currentNum = 1
+	if (settings['rainbowSingle'] == 'True'):
+		colorIndex = 0
+		while True:
+			hue = colorIndex / float(LED_COUNT)
+			r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
+			pixels.fill((r, g, b))
+			pixels.show()
+			time.sleep(0.025)
+			colorIndex += 1
+			if colorIndex >= LED_COUNT:
+				colorIndex = 0
+	if (settings['rainbowIndividual'] == 'True'):
+		colorIndex = 0
+		while True:
+			for i in range(LED_COUNT):
+				hue = (colorIndex + i) / float(LED_COUNT)
+				r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
+				pixels[i] = (r, g, b)
+			pixels.show()
+			time.sleep(0.025)
+			colorIndex += 1
+			if colorIndex >= LED_COUNT:
+				colorIndex = 0
+				
 	for i in range(0, length):
 		for j in numbers[subs[i]]:
 			pixels[currentNum + j-1] = color
-			activedPixels.append(currentNum + j-1)
 		currentNum = currentNum + 13
 	pixels.show()
 
@@ -94,11 +115,8 @@ def update():
 			setLights(subs)
 			UPDATED = True
 
-import time
-import colorsys
-
 def fadeThroughIndividualColors():
-    global activedPixels
+    global pixels
     global LED_COUNT
     global LED_BRIGHTNESS
     global colorIndex
@@ -107,17 +125,17 @@ def fadeThroughIndividualColors():
         for i in range(LED_COUNT):
             hue = (colorIndex + i) / float(LED_COUNT)
             r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
-            activedPixels[i] = (r, g, b)
-        activedPixels.show()
+            pixels[i] = (r, g, b)
+        pixels.show()
         time.sleep(0.025)
         colorIndex += 1
         if colorIndex >= LED_COUNT:
             colorIndex = 0
 
-fadeThroughIndividualColors()
+#fadeThroughIndividualColors()
 
 def fadeThroughSingleColor():
-	global activedPixels
+	global pixels
 	global LED_COUNT
 	global LED_BRIGHTNESS
 	global colorIndex
@@ -125,8 +143,8 @@ def fadeThroughSingleColor():
 	while True:
 		hue = colorIndex / float(LED_COUNT)
 		r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
-		activedPixels.fill((r, g, b))
-		activedPixels.show()
+		pixels.fill((r, g, b))
+		pixels.show()
 		time.sleep(0.025)
 		colorIndex += 1
 		if colorIndex >= LED_COUNT:
