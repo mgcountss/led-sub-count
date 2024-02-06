@@ -84,7 +84,7 @@ def setLights(subs):
 				
 	for i in range(0, length):
 		for j in numbers[subs[i]]:
-			if (settings['rainbowSAllOneColor'] == 'True'):
+			if (settings['rainbowSingle'] == 'True'):
 				hue = j / float(LED_COUNT)
 				r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
 				color = (r, g, b)
