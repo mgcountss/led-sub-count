@@ -51,6 +51,7 @@ def setLights(subs):
 	global settings
 	global pixels
 	global UPDATED
+	global activedPixels
 	color = hex_to_rgb(settings['color'])
 	pixels.fill((0, 0, 0))
 	pixels.show()
@@ -61,6 +62,7 @@ def setLights(subs):
 	for i in range(0, length):
 		for j in numbers[subs[i]]:
 			pixels[currentNum + j-1] = color
+			activedPixels.append(currentNum + j-1)
 		currentNum = currentNum + 13
 	pixels.show()
 
@@ -95,7 +97,7 @@ import time
 import colorsys
 
 def fadeThroughIndividualColors():
-    global pixels
+    global activedPixels
     global LED_COUNT
     global LED_BRIGHTNESS
     global colorIndex
@@ -104,8 +106,8 @@ def fadeThroughIndividualColors():
         for i in range(LED_COUNT):
             hue = (colorIndex + i) / float(LED_COUNT)
             r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
-            pixels[i] = (r, g, b)
-        pixels.show()
+            activedPixels[i] = (r, g, b)
+        activedPixels.show()
         time.sleep(0.025)
         colorIndex += 1
         if colorIndex >= LED_COUNT:
@@ -114,7 +116,7 @@ def fadeThroughIndividualColors():
 fadeThroughIndividualColors()
 
 def fadeThroughSingleColor():
-	global pixels
+	global activedPixels
 	global LED_COUNT
 	global LED_BRIGHTNESS
 	global colorIndex
@@ -122,8 +124,8 @@ def fadeThroughSingleColor():
 	while True:
 		hue = colorIndex / float(LED_COUNT)
 		r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
-		pixels.fill((r, g, b))
-		pixels.show()
+		activedPixels.fill((r, g, b))
+		activedPixels.show()
 		time.sleep(0.025)
 		colorIndex += 1
 		if colorIndex >= LED_COUNT:
