@@ -14,7 +14,10 @@ settings = json.loads(open("/home/aj/lights/settings.json", "r").read())
 CID = settings['id']
 print("Running test.py at " + datetime.datetime.now().strftime('%d/%m/%Y %H:%M'))
 
+#turn all pixels on when program starts
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
+pixels.fill((0, 0, 0))
+pixels.show()
 
 def getSubs():
 	global settings

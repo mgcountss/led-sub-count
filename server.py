@@ -4,7 +4,7 @@ import urllib.request
 import time
 import json
 
-hostName = "localhost"
+hostName = "0.0.0.0"
 serverPort = 4000
 
 class MyServer(BaseHTTPRequestHandler):
@@ -13,7 +13,7 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            f = open("index.html", "rb")
+            f = open("/home/aj/lights/index.html", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/default.png":
@@ -27,7 +27,7 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            f = open("user.json", "rb")
+            f = open("/home/aj/lights/user.json", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/odometer.js":
@@ -48,7 +48,7 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            f = open("settings.json", "rb")
+            f = open("/home/aj/lights/settings.json", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/favicon.ico":
