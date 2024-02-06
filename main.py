@@ -15,7 +15,7 @@ CID = settings['id']
 print("Running test.py at " + datetime.datetime.now().strftime('%d/%m/%Y %H:%M'))
 
 pixels = neopixel.NeoPixel(LED_PIN, LED_COUNT, brightness = LED_BRIGHTNESS, pixel_order = LED_ORDER, auto_write = False)
-pixels.fill((255, 255, 255))
+#pixels.fill((255, 255, 255))
 pixels.show()
 
 def getSubs():
@@ -54,8 +54,11 @@ def setLights(subs):
 	pixels.fill((0, 0, 0))
 	pixels.show()
 	subs = str(subs)
+	subs = "1234567890"
 	length = len(subs)
-	numbers = {"0":{0,1,2,3,4,5,6,7,8,9,10,11},"1":{0,1,2,3,4},"2": {0,11,10,9,8,12,2,3,4,5,6},"3":{0,2,4,5,6,7,8,9,10,11,12}, "4":{0,1,2,6,7,8,9,10,12},"5":{0,1,2,12,4,5,6,7,8,10,11},"6":{0,1,2,3,4,5,6,7,8,10,11,12},"7":{0,11,10,9,8,7,6},"8":{0,1,2,3,4,5,6,7,8,9,10,11,12},"9":{0,1,2,4,5,6,7,8,9,10,11,12}}
+	#for testing, change subs to 1234567890
+	#subs = "1234567890"
+	numbers = {"0":{0,1,2,3,4,5,6,7,8,9,10,12},"1":{0,1,2,3,4},"2": {0,11,10,9,8,12,2,3,4,5,6},"3":{0,2,4,5,6,7,8,9,10,12,11}, "4":{0,1,2,6,7,8,9,10,11},"5":{0,1,2,12,4,5,6,7,8,10,12},"6":{0,1,2,3,4,5,6,7,8,10,12,11},"7":{0,12,10,9,8,7,6},"8":{0,1,2,3,4,5,6,7,8,9,10,12,11},"9":{0,1,2,4,5,6,7,8,9,10,12,11}}
 	currentNum = 1
 	for i in range(0, length):
 		for j in numbers[subs[i]]:
@@ -90,7 +93,7 @@ def update():
 			setLights(subs)
 			UPDATED = True
 
-#while True:
-	#update()
-	#settings = json.loads(open("/home/aj/lights/settings.json", "r").read())
-	#time.sleep(int(settings['interval']))
+while True:
+	update()
+	settings = json.loads(open("/home/aj/lights/settings.json", "r").read())
+	time.sleep(int(settings['interval']))
