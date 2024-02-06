@@ -90,6 +90,32 @@ def update():
 			setLights(subs)
 			UPDATED = True
 
+def rainbowColorUpdater():
+	global pixels
+	global UPDATED
+	global settings
+	colors = []
+	for i in range(0, 360, 10):
+		colors.append((i, 100, 100))
+	while True:
+		for color in colors:
+			if UPDATED == False:
+				pixels.fill(colorsys.hsv_to_rgb(color[0]/360, color[1]/100, color[2]/100))
+				pixels.show()
+				time.sleep(0.1)
+			else:
+				break
+		if UPDATED == False:
+			for color in reversed(colors):
+				if UPDATED == False:
+					pixels.fill(colorsys.hsv_to_rgb(color[0]/360, color[1]/100, color[2]/100))
+					pixels.show()
+					time.sleep(0.1)
+				else:
+					break
+
+rainbowColorUpdater()
+
 while True:
 	update()
 	settings = json.loads(open("/home/aj/lights/settings.json", "r").read())
