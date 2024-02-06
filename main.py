@@ -94,7 +94,7 @@ def update():
 import time
 import colorsys
 
-def rainbowColorUpdater():
+def fadeThroughIndividualColors():
     global pixels
     global LED_COUNT
     global LED_BRIGHTNESS
@@ -111,7 +111,25 @@ def rainbowColorUpdater():
         if colorIndex >= LED_COUNT:
             colorIndex = 0
 
-rainbowColorUpdater()
+fadeThroughIndividualColors()
+
+def fadeThroughSingleColor():
+	global pixels
+	global LED_COUNT
+	global LED_BRIGHTNESS
+	global colorIndex
+	colorIndex = 0
+	while True:
+		hue = colorIndex / float(LED_COUNT)
+		r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
+		pixels.fill((r, g, b))
+		pixels.show()
+		time.sleep(0.025)
+		colorIndex += 1
+		if colorIndex >= LED_COUNT:
+			colorIndex = 0
+
+fadeThroughSingleColor()
 
 while True:
 	update()
