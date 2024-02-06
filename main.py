@@ -111,7 +111,7 @@ def fadeThroughIndividualColors():
         if colorIndex >= LED_COUNT:
             colorIndex = 0
 
-fadeThroughIndividualColors()
+#fadeThroughIndividualColors()
 
 def fadeThroughSingleColor():
 	global pixels
