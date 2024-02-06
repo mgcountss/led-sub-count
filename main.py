@@ -58,7 +58,7 @@ def setLights(subs):
 	subs = str(subs)
 	length = len(subs)
 	currentNum = 1
-	if (settings['rainbowSingle'] == 'True'):
+	'''if (settings['rainbowSingle'] == 'True'):
 		colorIndex = 0
 		while True:
 			hue = colorIndex / float(LED_COUNT)
@@ -80,10 +80,18 @@ def setLights(subs):
 			time.sleep(0.025)
 			colorIndex += 1
 			if colorIndex >= LED_COUNT:
-				colorIndex = 0
+				colorIndex = 0'''
 				
 	for i in range(0, length):
 		for j in numbers[subs[i]]:
+			if (settings['rainbowSAllOneColor'] == 'True'):
+				hue = j / float(LED_COUNT)
+				r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
+				color = (r, g, b)
+			elif (settings['rainbowIndividual'] == 'True'):
+				hue = (currentNum + j) / float(LED_COUNT)
+				r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
+				color = (r, g, b)
 			pixels[currentNum + j-1] = color
 		currentNum = currentNum + 13
 	pixels.show()
