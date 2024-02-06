@@ -111,9 +111,14 @@ def rainbowColorUpdater():
 			colorIndex = 0
 		else:
 			colorIndex = colorIndex + 1
-		for i in range(LED_COUNT):
-			pixels[i] = colors[colorIndex]
-		pixels.show()
+		#Fade to the next color
+		for i in range(0, 255, 5):
+			r = int((colors[colorIndex][0] * i) / 255)
+			g = int((colors[colorIndex][1] * i) / 255)
+			b = int((colors[colorIndex][2] * i) / 255)
+			pixels.fill((r, g, b))
+			pixels.show()
+			time.sleep(0.1)
 		
 		time.sleep(0.1)
 
