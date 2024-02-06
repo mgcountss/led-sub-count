@@ -7,7 +7,7 @@ import json
 
 LED_COUNT = 117
 LED_PIN	= board.D18
-LED_BRIGHTNESS = 0.5
+LED_BRIGHTNESS = 0.2
 LED_ORDER = neopixel.RGB
 UPDATED = False
 settings = json.loads(open("/home/aj/lights/settings.json", "r").read())
