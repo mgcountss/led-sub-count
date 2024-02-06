@@ -4,6 +4,7 @@ import neopixel
 import time
 import datetime
 import json
+import colorsys
 
 LED_COUNT = 117
 LED_PIN	= board.D18
@@ -90,38 +91,25 @@ def update():
 			setLights(subs)
 			UPDATED = True
 
-def rainbowColorUpdater():
-	#rotate all color through the rainbow seprately than the other system so it slowly moves through the rainbow
-	global pixels
-	global LED_COUNT
-	global LED_BRIGHTNESS
-	global colorIndex
-	colorIndex = 0
-	colors = [
-		(255, 0, 0),
-		(255, 127, 0),
-		(255, 255, 0),
-		(0, 255, 0),
-		(0, 0, 255),
-		(75, 0, 130),
-		(143, 0, 255)
-	]
-	while True:
-		if (colorIndex == 6):
-			colorIndex = 0
-		else:
-			colorIndex = colorIndex + 1
-		#Fade to the next color
-		for i in range(0, 255, 5):
-			r = int((colors[colorIndex][0] * i) / 255)
-			g = int((colors[colorIndex][1] * i) / 255)
-			b = int((colors[colorIndex][2] * i) / 255)
-			pixels.fill((r, g, b))
-			pixels.show()
-			time.sleep(0.1)
-		
-		time.sleep(0.1)
+import time
+import colorsys
 
+def rainbowColorUpdater():
+    global pixels
+    global LED_COUNT
+    global LED_BRIGHTNESS
+    global colorIndex
+    colorIndex = 0
+    while True:
+        for i in range(LED_COUNT):
+            hue = (colorIndex + i) / float(LED_COUNT)
+            r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(hue, 1.0, 1.0)]
+            pixels[i] = (r, g, b)
+        pixels.show()
+        time.sleep(0.1)
+        colorIndex += 1
+        if colorIndex >= LED_COUNT:
+            colorIndex = 0
 
 rainbowColorUpdater()
 
