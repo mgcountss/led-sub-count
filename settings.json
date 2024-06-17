@@ -1,1 +1,8 @@
-{"id": "UCSgk1g0AZi9_759yfz-iIHg", "api": "https://axern.space/api/get?platform=youtube&type=channel&id=", "interval": "2", "autoUpdate": false, "color": "#ff0000", "path": "estSubCount"}
+{
+    "id": "UCSgk1g0AZi9_759yfz-iIHg",
+    "api": "https://axern.space/api/get?platform=youtube&type=channel&id=",
+    "interval": "2",
+    "autoUpdate": false,
+    "color": "#ff0000",
+    "path": "estSubCount"
+}

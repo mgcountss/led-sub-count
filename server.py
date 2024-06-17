@@ -4,9 +4,11 @@ import urllib.request
 import time
 import json
 
-hostName = "10.0.0.102"
+#hostName = "10.0.0.102"
+hostName = "0.0.0.0"
 serverPort = 4000
-folderPath = "/home/lights/"
+#folderPath = "/home/lights/"
+folderPath = "C:/Users/ajdib/Downloads/lights/"
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -70,7 +72,7 @@ class MyServer(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path == "/search":
             query = json.loads(self.rfile.read(int(self.headers['Content-Length'])).decode("utf-8"))
-            req = urllib.request.Request("https://axern.space/api/search?platform=youtube&type=channel&query="+query["search"], headers={'User-Agent': 'Mozilla/5.0'})
+            req = urllib.request.Request("https://livecounts.xyz/api/youtube-live-subscriber-count/search/"+query["search"], headers={'User-Agent': 'Mozilla/5.0'})
             content = urllib.request.urlopen(req).read()
             content = json.loads(content)
             self.send_response(200)
