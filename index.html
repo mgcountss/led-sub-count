@@ -124,17 +124,30 @@
                 <option value="raw">YouTube.com</option>
             </select>
             <br>
-            <label autocomplete="off" id="intervalLabel">Update Interval: 5 </label><input type="range" id="interval" min="1" max="60"
-                value="2" placeholder="2"><br>
-            <label>Auto Update: </label><input  autocomplete="off" type="checkbox" id="autoUpdate" checked style="margin-left: 0vw;">
+            <label autocomplete="off" id="intervalLabel">Update Interval: 5 </label><input type="range" id="interval"
+                min="1" max="60" value="2" placeholder="2"><br>
+            <label>Auto Update: </label><input autocomplete="off" type="checkbox" id="autoUpdate" checked
+                style="margin-left: 0vw;">
             <br>
-            <br>
-            <label>Color: </label><input  autocomplete="off" type="color" id="color" value="#FF0000">
+            <hr>
+            <label>Color: </label><input autocomplete="off" type="color" id="color" value="#FF0000"><br><br>
+            <label>or Gradient</label><input type="checkbox" id="gradientCheck"></input>
+            <select id="gradientType">
+                <option>Static</option>
+                <option>Dynamic</option>
+            </select><br>
+            <label>Rainbow</label>
+            <input type="checkbox" id="rainbow" onclick="rainbow()"></input>
+            <div id="gradient">
+                <input type="color" class="color" value="#FF0000">
+                <input type="color" class="color" value="#0000FF">
+                <button onclick="addColor()">Add Color</button>
+            </div>
             <br>
             <hr>
             <h2>Change Channel</h2>
             <hr>
-            <input type="text"  autocomplete="off" id="search" placeholder="Search"><button id="searchButton"
+            <input type="text" autocomplete="off" id="search" placeholder="Search"><button id="searchButton"
                 onclick="search()">Search</button>
             <br>
             <div id="results"></div>
@@ -143,9 +156,24 @@
     <script>
         let ids = ["", ""]
         let id = ""
+        function addColor() {
+            document.getElementById('gradient').innerHTML += '<input type="color" class="color" value="#000000">';
+        }
         function save() {
             if (id == "") {
                 alert('Please select a channel first!');
+            }
+            let colors = [];
+            document.querySelectorAll('.color').forEach(color => {
+                colors.push(color.value);
+            })
+            if (document.getElementById('gradientCheck').checked) {
+                if (document.getElementById('gradientType').value == "Static") {
+                    document.getElementById('color').value = "linear-gradient(90deg, " + colors.join(", ") + ")";
+                } else {
+                    document.getElementById('color').value = "linear-gradient(90deg, " + colors.join(", ") + ")";
+                    document.getElementById('rainbow').checked = true;
+                }
             }
             fetch('/save', {
                 method: 'POST',

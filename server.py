@@ -4,7 +4,7 @@ import urllib.request
 import time
 import json
 
-hostName = "0.0.0.0"
+hostName = "10.0.0.102"
 serverPort = 4000
 
 class MyServer(BaseHTTPRequestHandler):

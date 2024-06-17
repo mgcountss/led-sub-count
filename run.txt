@@ -1,4 +1,4 @@
 sudo systemctl start main.service
 sudo systemctl start server.service
-https://medium.com/codex/setup-a-python-script-as-a-service-through-systemctl-systemd-f0cc55a42267
-http://10.0.0.86
+https://medium.com/codex/setup-a-python-script-as-a-service-through-systemctl-systemd-f0cc55a4226
+
