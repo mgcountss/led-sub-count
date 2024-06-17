@@ -4,11 +4,11 @@ import urllib.request
 import time
 import json
 
-#hostName = "10.0.0.102"
-hostName = "0.0.0.0"
 serverPort = 4000
-#folderPath = "/home/lights/"
-folderPath = "C:/Users/ajdib/Downloads/lights/"
+folderPath = "/home/lights/"
+hostName = "10.0.0.102"
+#folderPath = "C:/Users/ajdib/Downloads/lights/"
+#hostName = "0.0.0.0"
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
