@@ -6,6 +6,7 @@ import json
 
 hostName = "10.0.0.102"
 serverPort = 4000
+folderPath = "/home/lights/"
 
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -13,56 +14,56 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            f = open("/home/lights/index.html", "rb")
+            f = open(folderPath+"index.html", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/default.png":
             self.send_response(200)
             self.send_header("Content-type", "image/png")
             self.end_headers()
-            f = open("/home/lights/SFMG.png", "rb")
+            f = open(folderPath+"SFMG.png", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/user":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            f = open("/home/lights/user.json", "rb")
+            f = open(folderPath+"user.json", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/odometer.js":
             self.send_response(200)
             self.send_header("Content-type", "application/javascript")
             self.end_headers()
-            f = open("/home/lights/odometer.js", "rb")
+            f = open(folderPath+"odometer.js", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/odometer.css":
             self.send_response(200)
             self.send_header("Content-type", "text/css")
             self.end_headers()
-            f = open("/home/lights/odometer.css", "rb")
+            f = open(folderPath+"odometer.css", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/settings":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            f = open("/home/lights/settings.json", "rb")
+            f = open(folderPath+"settings.json", "rb")
             self.wfile.write(f.read())
             f.close()
         elif self.path == "/favicon.ico":
             self.send_response(200)
             self.send_header("Content-type", "image/x-icon")
             self.end_headers()
-            f = open("/home/lights/favicon.ico", "rb")
+            f = open(folderPath+"favicon.ico", "rb")
             self.wfile.write(f.read())
             f.close()
         else:
             self.send_response(404)
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            f = open("/home/lights/404.html", "rb")
+            f = open(folderPath+"404.html", "rb")
             self.wfile.write(f.read())
             f.close()
 
@@ -90,7 +91,7 @@ class MyServer(BaseHTTPRequestHandler):
             elif query['api'] == 'raw':
                 query['api'] = 'https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics&id='
                 query['path'] = "items[0].statistics.subscriberCount"
-            open("/home/aj/lights/settings.json", "w").write(json.dumps(query))
+            open(folderPath+"settings.json", "w").write(json.dumps(query))
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
