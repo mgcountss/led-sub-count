@@ -12,8 +12,9 @@ LED_PIN	= board.D18
 LED_BRIGHTNESS = 0.2
 LED_ORDER = neopixel.RGB
 UPDATED = False
+
 folderPath = "/home/lights/"
-settings = json.loads(open(folderPath+"lights/settings.json", "r").read())
+settings = json.loads(open(folderPath+"settings.json", "r").read())
 CID = settings['id']
 print("Running test.py at " + datetime.datetime.now().strftime('%d/%m/%Y %H:%M'))
 
@@ -31,7 +32,7 @@ def getSubs():
 	content = json.loads(content)
 	content['path'] = settings['path']
 	if settings['api'] == "https://axern.space/api/get?platform=youtube&type=channel&id=":
-		open(folderPath+"lights/user.json", "w").write(json.dumps(content))
+		open(folderPath+"user.json", "w").write(json.dumps(content))
 	else:
 		req2 = urllib.request.Request("https://axern.space/api/get?platform=youtube&type=channel&id="+CID, headers={'User-Agent': 'Mozilla/5.0'})
 		content2 = urllib.request.urlopen(req2).read()
@@ -39,7 +40,7 @@ def getSubs():
 		content['snippet'] = content2['snippet']
 		content['brandingSettings'] = content2['brandingSettings']
 		content['path'] = settings['path']
-		open(folderPath+"lights/user.json", "w").write(json.dumps(content))
+		open(folderPath+"user.json", "w").write(json.dumps(content))
 	if settings['path'] == 'counts[0]':
 		return content['counts'][0]
 	elif settings['path'] == 'counts[0].count':
@@ -79,7 +80,7 @@ def update():
 	global settings
 	global CID
 	global UPDATED
-	settings = json.loads(open(folderPath+"lights/settings.json", "r").read())
+	settings = json.loads(open(folderPath+"settings.json", "r").read())
 	settings['autoUpdate'] = str(settings['autoUpdate'])
 	if settings['id'] != CID:
 		CID = settings['id']
@@ -132,5 +133,5 @@ def fadeThroughSingleColor():
 
 while True:
 	update()
-	settings = json.loads(open(folderPath+"lights/settings.json", "r").read())
+	settings = json.loads(open(folderPath+"settings.json", "r").read())
 	time.sleep(int(settings['interval']))
