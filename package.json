@@ -1,0 +1,24 @@
+{
+  "name": "led-sub-count",
+  "version": "1.0.0",
+  "description": "Code for my led live sub counter using 117 (~3 strings) led WS8211 lights.",
+  "homepage": "https://github.com/mgcountss/led-sub-count#readme",
+  "bugs": {
+    "url": "https://github.com/mgcountss/led-sub-count/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgcountss/led-sub-count.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "node-fetch": "^3.3.2"
+  }
+}
