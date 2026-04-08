@@ -78,6 +78,16 @@ updateBoard({
         'count': 1234567890
     }
 });
+setTimeout(() => {
+updateBoard({
+    'settings': {
+        'color': '#ff0000'
+    },
+    'user': {
+        'count': 1234567890
+    }
+});
+},10000);
 
 app.listen(4000, () => {
     console.log('Server is running on port 4000')
