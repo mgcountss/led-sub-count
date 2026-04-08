@@ -27,13 +27,6 @@ const channel = ws281x(LED_COUNT, {
 const pixels = channel.array;
 pixels.fill(0);
 
-for (let i = 0; i < 20; i++) {
-    pixels[i] = 0x0000ff00; // red in WRGB format
-}
-
-ws281x.render();
-console.log('First 20 LEDs set to red.');
-
 process.on('SIGINT', () => {
     pixels.fill(0);
     ws281x.render();
