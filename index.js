@@ -73,21 +73,10 @@ function manageAutoUpdate() {
 // Simple local demo: count from 1 to 1,000,000,000 (1 per second)
 // 0x00RRGGBB
 const DEMO_COLOR = 0x00ff0000;
-let demoCount = 1234567890;
-
 updateBoard({
     settings: { color: DEMO_COLOR },
-    user: { count: demoCount },
+    user: { count: 4444444444 },
 });
-
-const demoInterval = setInterval(() => {
-    demoCount += 1;
-
-    updateBoard({
-        settings: { color: DEMO_COLOR },
-        user: { count: demoCount },
-    });
-}, 1000);
 
 app.listen(4000, () => {
     console.log('Server is running on port 4000')
