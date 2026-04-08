@@ -70,25 +70,29 @@ function manageAutoUpdate() {
     }, parseInt(data['settings']['interval']) * 1000);
 }
 
-//0x00RRGGBB
+// Simple local demo: count from 1 to 1,000,000,000 (1 per second)
+// 0x00RRGGBB
+const DEMO_COLOR = 0x00ff0000;
+let demoCount = 1;
+
 updateBoard({
-    'settings': {
-        'color': 0x00ff0000
-    },
-    'user': {
-        'count': 1234567890
-    }
+    settings: { color: DEMO_COLOR },
+    user: { count: demoCount },
 });
-setTimeout(() => {
-updateBoard({
-    'settings': {
-        'color': 0x00ff0000
-    },
-    'user': {
-        'count': 1234567890
+
+const demoInterval = setInterval(() => {
+    demoCount += 1;
+
+    updateBoard({
+        settings: { color: DEMO_COLOR },
+        user: { count: demoCount },
+    });
+
+    if (demoCount >= 1_000_000_000) {
+        clearInterval(demoInterval);
+        console.log('Demo finished at 1,000,000,000');
     }
-});
-},10000);
+}, 1000);
 
 app.listen(4000, () => {
     console.log('Server is running on port 4000')
