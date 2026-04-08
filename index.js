@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import updateBoard from './updateBoard.js';
+import updateBoard from './updateBoard.cjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

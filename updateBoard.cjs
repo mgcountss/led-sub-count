@@ -1,19 +1,14 @@
-import { createRequire } from 'module';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const require = createRequire(import.meta.url);
-const ws281x = require(join(dirname(fileURLToPath(import.meta.url)), 'node-rpi-ws281x-native'));
+const ws281x = require('/home/aj/led-sub-count/node-rpi-ws281x-native');
 const numbers = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12],          // "0"
-    [0, 1, 2, 3, 4],                          // "1"
-    [0, 1, 2, 12, 4, 5, 6, 7, 8, 10, 11],           // "2"
-    [0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12],           // "3"
-    [2, 3, 4, 6, 7, 8, 9, 10, 11],                // "4"
-    [0, 11, 10, 9, 8, 12, 2, 3, 4, 5, 6],           // "5"
+    [0, 1, 2, 3, 4],                                 // "1"
+    [0, 1, 2, 12, 4, 5, 6, 7, 8, 10, 11],            // "2"
+    [0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12],            // "3"
+    [2, 3, 4, 6, 7, 8, 9, 10, 11],                   // "4"
+    [0, 11, 10, 9, 8, 12, 2, 3, 4, 5, 6],            // "5"
     [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12],         // "6"
-    [4, 5, 6, 7, 8, 9, 10],                     // "7"
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],       // "8"
+    [4, 5, 6, 7, 8, 9, 10],                          // "7"
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],      // "8"
     [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]          // "9"
 ];
 
@@ -25,14 +20,6 @@ const channel = ws281x(LED_COUNT, {
 });
 
 const pixels = channel.array;
-pixels.fill(0);
-
-process.on('SIGINT', () => {
-    pixels.fill(0);
-    ws281x.render();
-    ws281x.reset();
-    process.exit(0);
-});
 
 function updateBoard(data) {
     resetBoard();
@@ -53,5 +40,12 @@ function resetBoard() {
     pixels.fill(0);
     ws281x.render();
 }
+
+process.on('SIGINT', () => {
+    pixels.fill(0);
+    ws281x.render();
+    ws281x.reset();
+    process.exit(0);
+});
 
 export default updateBoard;
