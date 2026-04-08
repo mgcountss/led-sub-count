@@ -87,11 +87,6 @@ const demoInterval = setInterval(() => {
         settings: { color: DEMO_COLOR },
         user: { count: demoCount },
     });
-
-    if (demoCount >= 1_000_000_000) {
-        clearInterval(demoInterval);
-        console.log('Demo finished at 1,000,000,000');
-    }
 }, 1000);
 
 app.listen(4000, () => {
