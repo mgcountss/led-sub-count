@@ -210,14 +210,25 @@
                 })
             })
                 .then(res => res.json())
-                .then(data => {
-                    if (data.length == 0) {
+                .then((payload) => {
+                    let channels = [];
+                    if (Array.isArray(payload)) {
+                        channels = payload;
+                    } else if (payload && Array.isArray(payload.list)) {
+                        channels = payload.list.map((row) => ({
+                            id: row[2],
+                            name: row[0],
+                            pfp: row[1],
+                            mainCount: '—'
+                        }));
+                    }
+                    if (channels.length === 0) {
                         alert('No results found!');
                     }
                     document.getElementById('results').innerHTML = '';
-                    data.forEach(channel => {
+                    channels.forEach((channel) => {
                         document.getElementById('results').innerHTML += `<div cid="${channel.id}" style="display: flex; gap: 5vw;"><img src="${channel.pfp}" style="width: 10vw; height: 10vw; object-fit: cover; border-radius: 50%;"><div><h2>${channel.name}</h2><h2 style="font-size: 2vw;">${channel.mainCount}</h2><button style="font-size: 3vw;" onclick="changeChannel('${channel.id}')">Change</button></div></div><hr>`;
-                    })
+                    });
                 })
         }
 
@@ -245,18 +256,26 @@
         function getSubscriberCount(u) {
             if (!u || typeof u !== 'object') return null;
             if (u.count !== undefined && u.count !== null && u.count !== '') return String(u.count);
-            if (Array.isArray(u.counts) && u.counts.length > 0) {
-                const c0 = u.counts[0];
-                if (typeof c0 === 'number' || typeof c0 === 'string') return String(c0);
-                if (c0 && c0.count != null) return String(c0.count);
+            if (Array.isArray(u.counts)) {
+                const sub = u.counts.find((c) => c.value === 'subscribers');
+                if (sub && sub.count != null) return String(sub.count);
+                if (u.counts.length > 0 && u.counts[0].count != null) return String(u.counts[0].count);
             }
             const yt = u.items && u.items[0] && u.items[0].statistics && u.items[0].statistics.subscriberCount;
             if (yt != null) return String(yt);
             return null;
         }
 
+        function mixernoUserRow(u, value) {
+            if (!u || !Array.isArray(u.user)) return null;
+            const row = u.user.find((x) => x.value === value);
+            return row && row.count != null ? row.count : null;
+        }
+
         function displayName(u) {
             if (!u || typeof u !== 'object') return 'Loading';
+            const fromMixerno = mixernoUserRow(u, 'name');
+            if (fromMixerno) return fromMixerno;
             if (u.name) return u.name;
             if (u.snippet && u.snippet.title) return u.snippet.title;
             return 'Loading';
@@ -264,6 +283,8 @@
 
         function avatarUrl(u) {
             if (!u || typeof u !== 'object') return '/default.png';
+            const fromMixerno = mixernoUserRow(u, 'pfp');
+            if (fromMixerno) return fromMixerno;
             if (u.pfp) return u.pfp;
             const h = u.snippet && u.snippet.thumbnails && u.snippet.thumbnails.high && u.snippet.thumbnails.high.url;
             return h || '/default.png';
@@ -271,6 +292,8 @@
 
         function bannerUrl(u) {
             if (!u || typeof u !== 'object') return '/default.png';
+            const fromMixerno = mixernoUserRow(u, 'banner');
+            if (fromMixerno) return fromMixerno;
             if (u.banner) return u.banner;
             const bi = u.brandingSettings && u.brandingSettings.image;
             if (!bi) return '/default.png';

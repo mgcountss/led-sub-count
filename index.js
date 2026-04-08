@@ -41,6 +41,16 @@ function convertColor(color) {
     return parseInt(color.replace('#', '0x'), 16);
 }
 
+function subscriberCountFromMixerno(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    if (typeof payload.count === 'number') return payload.count;
+    if (Array.isArray(payload.counts)) {
+        const row = payload.counts.find((c) => c.value === 'subscribers');
+        if (row && row.count != null) return Number(row.count);
+    }
+    return null;
+}
+
 app.post('/api/save', (req, res) => {
     data['settings'] = { ...req.body };
     if (typeof data['settings']['color'] === 'string' && data['settings']['color'].startsWith('#')) {
@@ -57,15 +67,21 @@ function manageAutoUpdate() {
     if (data['settings']['autoUpdate'] == false) {
         if (autoUpdateInterval) {
             clearInterval(autoUpdateInterval);
+            autoUpdateInterval = null;
         }
         return;
+    }
+
+    if (autoUpdateInterval) {
+        clearInterval(autoUpdateInterval);
     }
 
     autoUpdateInterval = setInterval(() => {
         fetch('https://mixerno.space/api/youtube-channel-counter/user/' + data['settings']['id'])
             .then(res => res.json())
             .then((userPayload) => {
-                data.user = userPayload;
+                const n = subscriberCountFromMixerno(userPayload);
+                data.user = n != null ? { ...userPayload, count: n } : userPayload;
                 fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
                 updateBoard(data);
             });
