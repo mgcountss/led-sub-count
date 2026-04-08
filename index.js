@@ -2,7 +2,11 @@ import express from 'express';
 import fetch from 'node-fetch';
 import bodyParser from 'body-parser';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import updateBoard from './updateBoard.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let autoUpdateInterval = null;
 let data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
@@ -12,11 +16,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //send any file in the public directory
 app.get('/:file', (req, res) => {
-    res.sendFile(__dirname + '/public/' + req.params.file);
+    res.sendFile(join(__dirname, 'public', req.params.file));
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/api/settings', (req, res) => {

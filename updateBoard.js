@@ -1,4 +1,9 @@
-const ws281x = require('/home/aj/led-sub-count/node-rpi-ws281x-native');
+import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const require = createRequire(import.meta.url);
+const ws281x = require(join(dirname(fileURLToPath(import.meta.url)), 'node-rpi-ws281x-native'));
 const numbers = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12],          // "0"
     [0, 1, 2, 3, 4],                          // "1"
