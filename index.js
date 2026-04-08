@@ -70,9 +70,10 @@ function manageAutoUpdate() {
     }, parseInt(data['settings']['interval']) * 1000);
 }
 
+//0x00RRGGBB
 updateBoard({
     'settings': {
-        'color': '#ff0000'
+        'color': 0x00ff0000
     },
     'user': {
         'count': 1234567890
@@ -81,7 +82,7 @@ updateBoard({
 setTimeout(() => {
 updateBoard({
     'settings': {
-        'color': '#ff0000'
+        'color': 0x00ff0000
     },
     'user': {
         'count': 1234567890
