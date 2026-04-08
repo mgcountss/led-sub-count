@@ -14,11 +14,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//send any file in the public directory
-app.get('/:file', (req, res) => {
-    res.sendFile(join(__dirname, 'public', req.params.file));
-});
-
 app.get('/', (req, res) => {
     res.sendFile(join(__dirname, 'public', 'index.html'));
 });
@@ -42,8 +37,15 @@ app.post('/api/search', (req, res) => {
         });
 });
 
+function convertColor(color) {
+    return parseInt(color.replace('#', '0x'), 16);
+}
+
 app.post('/api/save', (req, res) => {
-    data['settings'] = req.body;
+    data['settings'] = { ...req.body };
+    if (typeof data['settings']['color'] === 'string' && data['settings']['color'].startsWith('#')) {
+        data['settings']['color'] = convertColor(data['settings']['color']);
+    }
     fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
     if (data['settings']['autoUpdate'] == true) {
         manageAutoUpdate();
@@ -62,20 +64,17 @@ function manageAutoUpdate() {
     autoUpdateInterval = setInterval(() => {
         fetch('https://mixerno.space/api/youtube-channel-counter/user/' + data['settings']['id'])
             .then(res => res.json())
-            .then(data => {
-                data['user'] = data;
+            .then((userPayload) => {
+                data.user = userPayload;
                 fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
                 updateBoard(data);
             });
     }, parseInt(data['settings']['interval']) * 1000);
 }
 
-// Simple local demo: count from 1 to 1,000,000,000 (1 per second)
-// 0x00RRGGBB
-const DEMO_COLOR = 0x00ff0000;
-updateBoard({
-    settings: { color: DEMO_COLOR },
-    user: { count: 4444444444 },
+// Static files from public (must be after /api routes so /api/* is not captured as a filename)
+app.get('/:file', (req, res) => {
+    res.sendFile(join(__dirname, 'public', req.params.file));
 });
 
 app.listen(4000, () => {

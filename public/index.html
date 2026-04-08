@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AJ's Live Sub Count</title>
+    <script src="./odometer.js"></script>
+    <link rel="stylesheet" href="./odometer.css">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            background-color: #121212;
+            color: #FFF;
+            font-family: Roboto;
+            font-size: 2vw;
+            margin: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-gap: 10px;
+            height: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .banner {
+            width: 100%;
+            height: 10vw;
+            object-fit: cover;
+            filter: blur(10px);
+        }
+
+        .avatar {
+            width: 10vw;
+            height: 10vw;
+            object-fit: cover;
+            border-radius: 50%;
+            position: absolute;
+            border: 0.5vw solid white;
+            margin-left: -30vw;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .name {
+            font-size: 3vw;
+            margin-bottom: 0;
+            margin-top: 0.5vw;
+        }
+
+        .subs {
+            font-size: 6vw;
+            margin-top: 0;
+            margin-bottom: 0.5vw;
+        }
+
+        .counter {
+            border: 0.5vw solid white;
+        }
+
+        .footer {
+            margin-top: 0vw;
+            margin-bottom: 0.5vw;
+            font-size: 2vw;
+        }
+
+        input,
+        select,
+        option {
+            font-size: 1.4vw;
+            width: 70%;
+        }
+
+        input[type=checkbox] {
+            transform: scale(2);
+        }
+
+        button {
+            font-size: 1.4vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid">
+        <div>
+            <center>
+                <h2>Currently Tracking</h2>
+            </center>
+            <hr>
+            <div class="counter">
+                <img class="banner" src="/default.png">
+                <img class="avatar" src="/default.png">
+                <center>
+                    <h1 class="name">Loading</h1>
+                    <h1 class="subs odometer">000,000,000</h1>
+                    <h2 class="footer">Subscribers</h2>
+                </center>
+            </div>
+        </div>
+        <div>
+            <div style="display: flex; gap: 5vw;">
+                <h2>Settings</h2>
+                <button id="save" onclick="save()">Save</button>
+            </div>
+            <hr>
+            <label>Channel ID: </label><input type="text" id="ID" autocomplete="off">
+            <br>
+            <label>API Source: </label>
+            <select id="API" autocomplete="off">
+                <option value="mixerno">Mixerno.space</option>
+                <option value="xyz">Livecounts.xyz</option>
+                <option value="axern">Axern.space</option>
+                <option value="raw">YouTube.com</option>
+            </select>
+            <br>
+            <label autocomplete="off" id="intervalLabel">Update Interval: 5 </label><input type="range" id="interval"
+                min="1" max="60" value="2" placeholder="2"><br>
+            <label>Auto Update: </label><input autocomplete="off" type="checkbox" id="autoUpdate" checked
+                style="margin-left: 0vw;">
+            <br>
+            <hr>
+            <label>Color: </label><input autocomplete="off" type="color" id="color" value="#FF0000"><br><br>
+            <label>or Gradient</label><input type="checkbox" id="gradientCheck"></input>
+            <select id="gradientType">
+                <option>Static</option>
+                <option>Dynamic</option>
+            </select><br>
+            <label>Rainbow</label>
+            <input type="checkbox" id="rainbow">
+            <div id="gradient">
+                <input type="color" class="color" value="#FF0000">
+                <input type="color" class="color" value="#0000FF">
+                <button onclick="addColor()">Add Color</button>
+            </div>
+            <br>
+            <hr>
+            <h2>Change Channel</h2>
+            <hr>
+            <input type="text" autocomplete="off" id="search" placeholder="Search"><button id="searchButton"
+                onclick="search()">Search</button>
+            <br>
+            <div id="results"></div>
+        </div>
+    </div>
+    <script>
+        let ids = ["", ""]
+        let id = ""
+        function addColor() {
+            document.getElementById('gradient').innerHTML += '<input type="color" class="color" value="#000000">';
+        }
+        function save() {
+            if (id == "") {
+                alert('Please select a channel first!');
+                return;
+            }
+            let colors = [];
+            document.querySelectorAll('.color').forEach(color => {
+                colors.push(color.value);
+            })
+            if (document.getElementById('gradientCheck').checked) {
+                if (document.getElementById('gradientType').value == "Static") {
+                    document.getElementById('color').value = "linear-gradient(90deg, " + colors.join(", ") + ")";
+                } else {
+                    document.getElementById('color').value = "linear-gradient(90deg, " + colors.join(", ") + ")";
+                    document.getElementById('rainbow').checked = true;
+                }
+            }
+            fetch('/api/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: id,
+                    api: document.getElementById('API').value,
+                    interval: document.getElementById('interval').value,
+                    autoUpdate: document.getElementById('autoUpdate').checked,
+                    color: document.getElementById('color').value
+                })
+            }).then(res => res.json())
+                .then(data => {
+                    document.getElementById('ID').value = id;
+                    if (data.message) {
+                        alert('Saved!');
+                    } else {
+                        alert('Error!');
+                    }
+                })
+                .catch(() => alert('Error!'));
+        }
+        function search() {
+            fetch('/api/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    search: document.getElementById('search').value
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length == 0) {
+                        alert('No results found!');
+                    }
+                    document.getElementById('results').innerHTML = '';
+                    data.forEach(channel => {
+                        document.getElementById('results').innerHTML += `<div cid="${channel.id}" style="display: flex; gap: 5vw;"><img src="${channel.pfp}" style="width: 10vw; height: 10vw; object-fit: cover; border-radius: 50%;"><div><h2>${channel.name}</h2><h2 style="font-size: 2vw;">${channel.mainCount}</h2><button style="font-size: 3vw;" onclick="changeChannel('${channel.id}')">Change</button></div></div><hr>`;
+                    })
+                })
+        }
+
+        function changeChannel(cid) {
+            if ((ids[1]) && (ids[1].style)) {
+                ids[1].style.border = 'none';
+            }
+            ids[0] = cid;
+            id = cid;
+            ids[1] = document.querySelectorAll('[cid="' + cid + '"]')[0]
+            ids[1].style.border = '0.5vw solid white';
+        }
+
+        document.getElementById('interval').oninput = function () {
+            document.getElementById('intervalLabel').innerHTML = 'Update Interval: ' + this.value;
+        }
+
+        function colorToHexInput(c) {
+            if (c === undefined || c === null || c === '') return '#ff0000';
+            if (typeof c === 'number' && Number.isFinite(c)) return '#' + c.toString(16).padStart(6, '0');
+            if (typeof c === 'string' && c.startsWith('#')) return c;
+            return '#ff0000';
+        }
+
+        function getSubscriberCount(u) {
+            if (!u || typeof u !== 'object') return null;
+            if (u.count !== undefined && u.count !== null && u.count !== '') return String(u.count);
+            if (Array.isArray(u.counts) && u.counts.length > 0) {
+                const c0 = u.counts[0];
+                if (typeof c0 === 'number' || typeof c0 === 'string') return String(c0);
+                if (c0 && c0.count != null) return String(c0.count);
+            }
+            const yt = u.items && u.items[0] && u.items[0].statistics && u.items[0].statistics.subscriberCount;
+            if (yt != null) return String(yt);
+            return null;
+        }
+
+        function displayName(u) {
+            if (!u || typeof u !== 'object') return 'Loading';
+            if (u.name) return u.name;
+            if (u.snippet && u.snippet.title) return u.snippet.title;
+            return 'Loading';
+        }
+
+        function avatarUrl(u) {
+            if (!u || typeof u !== 'object') return '/default.png';
+            if (u.pfp) return u.pfp;
+            const h = u.snippet && u.snippet.thumbnails && u.snippet.thumbnails.high && u.snippet.thumbnails.high.url;
+            return h || '/default.png';
+        }
+
+        function bannerUrl(u) {
+            if (!u || typeof u !== 'object') return '/default.png';
+            if (u.banner) return u.banner;
+            const bi = u.brandingSettings && u.brandingSettings.image;
+            if (!bi) return '/default.png';
+            return bi.bannerImageUrl || bi.bannerExternalUrl || '/default.png';
+        }
+
+        function getStats() {
+            fetch('/api/user')
+                .then(res => res.json())
+                .then((u) => {
+                    if (!u || typeof u !== 'object' || Object.keys(u).length === 0) {
+                        document.querySelector('.name').textContent = 'Loading';
+                        document.querySelector('.subs').textContent = '—';
+                        return;
+                    }
+                    document.querySelector('.avatar').src = avatarUrl(u);
+                    document.querySelector('.name').textContent = displayName(u);
+                    document.querySelector('.banner').src = bannerUrl(u);
+                    const count = getSubscriberCount(u);
+                    if (count != null) {
+                        const n = Number(count);
+                        document.querySelector('.subs').textContent = Number.isFinite(n)
+                            ? n.toLocaleString()
+                            : count;
+                    }
+                })
+                .catch(() => { });
+        }
+        getStats();
+        setInterval(() => {
+            getStats();
+        }, 2000);
+
+        function settings() {
+            fetch('/api/settings')
+                .then(res => res.json())
+                .then((s) => {
+                    id = s.id || '';
+                    let apiVal = s.api;
+                    if (apiVal == "https://axern.space/api/get?platform=youtube&type=channel&id=") {
+                        apiVal = "axern";
+                    } else if (apiVal == "https://mixerno.space/api/youtube-channel-counter/user/") {
+                        apiVal = "mixerno";
+                    } else if (apiVal == "https://livecounts.xyz/api/youtube-live-subscriber-count/live/") {
+                        apiVal = "xyz";
+                    } else if (apiVal == "https://yt.lemnoslife.com/noKey/channels?part=snippet,statistics&id=") {
+                        apiVal = "raw";
+                    }
+                    document.getElementById('ID').value = s.id || '';
+                    document.getElementById('API').value = apiVal || 'mixerno';
+                    const interval = s.interval != null ? s.interval : 2;
+                    document.getElementById('interval').value = interval;
+                    document.getElementById('autoUpdate').checked = s.autoUpdate !== false;
+                    document.getElementById('color').value = colorToHexInput(s.color);
+                    document.getElementById('intervalLabel').innerHTML = 'Update Interval: ' + interval;
+                })
+                .catch(() => { });
+        }
+        settings();
+    </script>
+</body>
+
+</html>
